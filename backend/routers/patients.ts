@@ -1,83 +1,89 @@
 import express, { Request, Response, Router } from "express";
-import Doctor from "../models/Doctor";
+import Patient from "../models/Patient";
 
 const router: Router = express.Router();
 
-// Get all doctors
+// Get all patients
 router.get("/", async (req: Request, res: Response) => {
 	try {
-		const doctors = await Doctor.find();
-		res.json(doctors);
+		const patients = await Patient.find();
+		if (!patients || patients.length === 0) {
+			return res.status(404).json({ error: "Patient not found" });
+		}
+		res.json(patients);
 	} catch (err) {
-		res.status(500).json({ error: "Failed to fetch doctors" });
+		res.status(500).json({ error: "Failed to fetch patients" });
 	}
 });
 
-// Create a doctor
+// Search for patients by name
+router.get("/search", async (req: Request, res: Response) => {
+	try {
+		const name = req.query.name;
+		const patients = await Patient.find({
+			name: { $regex: `.*${name}.*`, $options: "i" },
+		});
+		if (!patients || patients.length === 0) {
+			return res.status(404).json({ error: "Patient not found" });
+		}
+		res.json(patients);
+	} catch (err) {
+		res.status(500).json({ error: "Failed to search patients" });
+	}
+});
+
+// find a Patient by ID
+router.get("/:id", async (req: Request, res: Response) => {
+	try {
+		const patient = await Patient.findById(req.params.id);
+		if (!patient) {
+			return res.status(404).json({ error: "Patient not found" });
+		}
+		res.json(patient);
+	} catch (err) {
+		res.status(500).json({ error: "Failed to fetch patient" });
+	}
+});
+
+// Create a patient
 router.post("/", async (req: Request, res: Response) => {
 	try {
 		// Validate request body codes here
 
-		const doctor = new Doctor(req.body);
-		await doctor.save();
-		res.status(201).json(doctor);
+		const patient = new Patient(req.body);
+		await patient.save();
+		res.status(201).json(patient);
 	} catch (err) {
-		res.status(400).json({ error: "Failed to create doctor" });
-	}
-});
-// find a Doctor by ID
-router.get("/:id", async (req: Request, res: Response) => {
-	const { id } = req.params;
-	try {
-		const doctor = await Doctor.findById(id);
-		if (!doctor) {
-			res.status(404).json({ error: "Doctor not found" });
-		}
-		res.json(doctor);
-	} catch (err) {
-		res.status(500).json({ error: "Failed to fetch doctor" });
+		res.status(400).json({ error: "Failed to create patient" });
 	}
 });
 
-// Update a doctor
+// Update a patient
 router.put("/:id", async (req: Request, res: Response) => {
 	try {
-		const doctor = await Doctor.findByIdAndUpdate(req.params.id, req.body, {
+		const patient = await Patient.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
 			runValidators: true,
 		});
-		if (!doctor) {
-			res.status(404).json({ error: "Doctor not found" });
+		if (!patient) {
+			return res.status(404).json({ error: "Patient not found" });
 		}
-		res.json(doctor);
+		res.json(patient);
 	} catch (err) {
-		res.status(400).json({ error: "Failed to update doctor" });
+		res.status(400).json({ error: "Failed to update patient" });
 	}
 });
 
-// Delete a doctor
+// Delete a patient
 router.delete("/:id", async (req: Request, res: Response) => {
 	try {
-		const doctor = await Doctor.findByIdAndDelete(req.params.id);
-		if (!doctor) {
-			res.status(404).json({ error: "Doctor not found" });
+		const patient = await Patient.findByIdAndDelete(req.params.id);
+		if (!patient) {
+			return res.status(404).json({ error: "Patient not found" });
 		}
-		res.json({ message: "Doctor deleted successfully" });
+		res.json({ message: "Patient deleted successfully" });
 	} catch (err) {
-		res.status(500).json({ error: "Failed to delete doctor" });
-	}
-});
-
-// Search for doctors by name
-router.get("/search", async (req: Request, res: Response) => {
-	const { name } = req.query;
-	try {
-		const doctors = await Doctor.find({
-			name: { $regex: name, $options: "i" },
-		});
-		res.json(doctors);
-	} catch (err) {
-		res.status(500).json({ error: "Failed to search doctors" });
+		res.status(500).json({ error: "Failed to delete patient" });
 	}
 });
 
