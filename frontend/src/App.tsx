@@ -1,29 +1,92 @@
-import Home from "./pages/Home.tsx";
-import Patients from "./pages/Patients.tsx";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import Layout from "@/components/Layout";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
+import Doctors from "@/pages/Doctors";
+import Patients from "@/pages/Patients";
+import Appointments from "@/pages/Appointments";
 
-const App = () => {
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+	const { user, isLoading } = useAuth();
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen flex items-center justify-center">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+			</div>
+		);
+	}
+
+	if (!user) {
+		return <Navigate to="/login" />;
+	}
+
+	return <>{children}</>;
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+	const { user, isLoading } = useAuth();
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen flex items-center justify-center">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+			</div>
+		);
+	}
+
+	if (!user || user.role !== "admin") {
+		return <Navigate to="/dashboard" />;
+	}
+
+	return <>{children}</>;
+}
+
+function AppRoutes() {
+	return (
+		<Routes>
+			<Route path="/login" element={<Login />} />
+			<Route
+				path="/"
+				element={
+					<ProtectedRoute>
+						<Layout />
+					</ProtectedRoute>
+				}
+			>
+				<Route index element={<Navigate to="/dashboard" replace />} />
+				<Route path="dashboard" element={<Dashboard />} />
+				<Route path="appointments" element={<Appointments />} />
+				<Route
+					path="doctors"
+					element={
+						<AdminRoute>
+							<Doctors />
+						</AdminRoute>
+					}
+				/>
+				<Route
+					path="patients"
+					element={
+						<AdminRoute>
+							<Patients />
+						</AdminRoute>
+					}
+				/>
+			</Route>
+		</Routes>
+	);
+}
+
+export default function App() {
 	return (
 		<Router>
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/patients" element={<Patients />} />
-				{/* Add more routes as needed */}
-				{/* <Route path="/appointments" element={<Appointments />} />
-				<Route path="/settings" element={<Settings />} />
-				<Route path="/emergency-alerts" element={<EmergencyAlerts />} />
-
-				<Route path="/todays-appointments" element={<TodaysAppointments />} />
-				<Route path="/add-appointment" element={<AddAppointment />} />
-				<Route path="/view-appointment/:id" element={<ViewAppointment />} />
-				<Route path="/edit-appointment/:id" element={<EditAppointment />} />
-
-				<Route path="/edit-patient/:id" element={<EditPatient />} />
-				<Route path="/patient/:id" element={<PatientDetails />} />
-				<Route path="/add-patient" element={<AddPatient />} />
-				<Route path="/view-patient/:id" element={<ViewPatient />} /> */}
-			</Routes>
+			<AuthProvider>
+				<AppRoutes />
+				<Toaster />
+			</AuthProvider>
 		</Router>
 	);
-};
-export default App;
+}

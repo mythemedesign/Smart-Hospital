@@ -1,13 +1,19 @@
 {
 	"compilerOptions": {
-		"target": "es6",
+		"target": "ES2020",
 		"module": "commonjs",
+		"lib": ["ES2020"],
 		"outDir": "./dist",
+		"rootDir": ".",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"typeRoots": ["./node_modules/@types", "./src/types"],
+		"types": ["node", "express"]
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules"]
+	"include": ["src/**/*", "routes", "services", "validations", "server.ts"],
+	"exclude": ["node_modules", "dist"]
 }

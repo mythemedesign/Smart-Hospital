@@ -1,17 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "@/lib/axios";
 
-const mockPatients = [
-	{ id: 1, name: "Alex Smith", age: 29, status: "Stable" },
-	{ id: 2, name: "John Doe", age: 45, status: "Critical" },
-	{ id: 3, name: "Maria Garcia", age: 34, status: "Stable" },
-];
-
+type Patient = {
+	id: string;
+	name: string;
+	age: number;
+	status: "Critical" | "Stable";
+};
 export default function PatientsTable() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const navigate = useNavigate();
 
-	const filteredPatients = mockPatients.filter((patient) =>
+	const [patients, setPatients] = useState<Patient[]>([]);
+
+	// Fetch patients on component mount
+	useEffect(() => {
+		const fetchPatients = async () => {
+			try {
+				const res = await api.get("http://localhost:3000/api/patients");
+				setPatients(res.data);
+			} catch (err) {
+				console.error("Error fetching patients:", err);
+			}
+		};
+		fetchPatients();
+	}, []);
+
+	const filteredPatients = patients.filter((patient: Patient) =>
 		patient.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
 
