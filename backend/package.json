@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "nodemon",
 		"build": "tsc",
-		"serve": "node dist/index.js",
+		"server": "node dist/server.js",
 		"create-admin": "ts-node src/createAdmin.ts"
 	},
 	"keywords": [],

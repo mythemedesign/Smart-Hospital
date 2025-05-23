@@ -19,5 +19,8 @@ RUN npm run build
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"] 
+# Start the application using the server.js script
+CMD ["npm", "run", "server"]
+
+# Alternative development mode
+# CMD ["npm", "run", "dev"] 
