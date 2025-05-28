@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "kubernetes://schema/v1%40service": "file:///Users/mohammad/My%20Workspace/Smart%20Hospital/kubernetes/backend-deployment.yml"
+    }
+}

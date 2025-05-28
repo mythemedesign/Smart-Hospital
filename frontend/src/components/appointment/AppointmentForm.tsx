@@ -219,7 +219,6 @@ export function AppointmentForm({ onSuccess }: AppointmentFormProps) {
                                             disabled={(date: Date) =>
                                                 date < new Date(new Date().setHours(0, 0, 0, 0))
                                             }
-                                            initialFocus
                                         />
                                     </PopoverContent>
                                 </Popover>

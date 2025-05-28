@@ -22,10 +22,16 @@ app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // CORS configuration
-
 app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend URL
-    credentials: true, // Allow credentials (cookies, authorization headers, etc)
+    // origin: [
+    //     'http://localhost:5173',    // Vite dev server
+    //     'http://localhost',         // Frontend container
+    //     'http://localhost:80',      // Frontend container with port
+    //     'http://127.0.0.1',         // Alternative localhost
+    //     'http://127.0.0.1:80'       // Alternative localhost with port
+    // ],
+    origin: '*',
+    credentials: true,  // Allow credentials (cookies, authorization headers, etc)
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -65,5 +71,5 @@ app.use((req, res) => {
 
 // Start the server
 app.listen(port, () => {
-	console.log(`Server is running at http://localhost:${port}`);
+	console.log(`Server is running at ${process.env.CLIENT_URL}`);
 });

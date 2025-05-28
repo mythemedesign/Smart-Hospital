@@ -131,7 +131,7 @@ export function PatientForm({ patientId, onSuccess }: PatientFormProps) {
         },
     });
 
-    const { control, handleSubmit, formState: { errors } } = form;
+    const { control, handleSubmit } = form;
 
     useEffect(() => {
         if (patientId) {

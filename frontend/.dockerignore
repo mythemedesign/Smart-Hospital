@@ -12,8 +12,6 @@ coverage
 .vscode
 .idea
 *.log
-public
-src
 tests
 __tests__
 *.test.*
