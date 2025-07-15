@@ -95,7 +95,7 @@ export const DoctorSchema = z.object({
         .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format'),
     
     avatarUrl: z.string()
-        .url('Invalid URL format')
+        // .url('Invalid URL format')
         .optional()
         .nullable(),
     

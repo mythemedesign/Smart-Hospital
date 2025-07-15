@@ -5,8 +5,8 @@ Dockerfile
 .git
 .gitignore
 README.md
-.env
-.env.*
+# .env
+# .env.*
 dist
 coverage
 .vscode

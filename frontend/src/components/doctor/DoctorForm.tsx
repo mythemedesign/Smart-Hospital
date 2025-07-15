@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useForm, useFieldArray, SubmitHandler, FieldValues } from "react-hook-form";
+import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -113,7 +113,7 @@ const doctorFormSchema = z.object({
         .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format'),
     
     avatarUrl: z.string()
-        .url('Invalid URL format')
+        // .url('Invalid URL format')
         .optional()
         .nullable(),
     
@@ -303,7 +303,7 @@ export function DoctorForm({ doctorId, onSuccess }: DoctorFormProps) {
                                 <FormLabel>Avatar URL (Optional)</FormLabel>
                                 <FormControl>
                                     <Input
-                                        type="url"
+                                        type="text"
                                         placeholder="https://example.com/avatar.jpg"
                                         {...field}
                                         value={field.value || ""}
